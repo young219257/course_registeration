@@ -32,7 +32,7 @@ out/
 /dist/
 /nbdist/
 /.nb-gradle/
-
+git status
 ### VS Code ###
 .vscode/
 
