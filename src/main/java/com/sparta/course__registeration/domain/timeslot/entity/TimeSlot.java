@@ -1,6 +1,7 @@
 package com.sparta.course__registeration.domain.timeslot.entity;
 
 import com.sparta.course__registeration.domain.lesson.entity.Lesson;
+import com.sparta.course__registeration.domain.timeslot.dto.TimeSlotRequestDto;
 import com.sparta.course__registeration.domain.tutor.entity.Tutor;
 import com.sparta.course__registeration.global.entity.TimeStamped;
 import jakarta.persistence.*;
@@ -10,6 +11,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Entity
@@ -27,18 +29,27 @@ public class TimeSlot extends TimeStamped {
 
 
     @Column(nullable = false)
-    private LocalDate startTime;
+    private LocalDateTime startTime;
 
     @Column(nullable = false)
-    private LocalDate endTime;
+    private LocalDateTime endTime;
 
     @Column(nullable = false)
-    private boolean isAvailable = false;
+    private boolean isAvailable = true;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="tutor_id",nullable = false)
     private Tutor tutor;
 
-    @OneToMany(mappedBy = "timeslots",cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "timeslot",cascade = CascadeType.ALL)
     private List<Lesson> lessons;
+
+
+    public static TimeSlot of(Tutor tutor, LocalDateTime availableTimeSlot) {
+        return TimeSlot.builder().
+                tutor(tutor).
+                startTime(availableTimeSlot).
+                endTime(availableTimeSlot.plusMinutes(30)).
+                build();
+    }
 }
