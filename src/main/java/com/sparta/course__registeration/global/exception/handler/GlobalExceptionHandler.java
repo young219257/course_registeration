@@ -15,4 +15,5 @@ public class GlobalExceptionHandler {
     public ResponseEntity exception(Exception ex) {
         RestApiException restApiException=new RestApiException(HttpStatus.INTERNAL_SERVER_ERROR.value(), ex.getMessage());
         return new ResponseEntity<>(restApiException, HttpStatus.INTERNAL_SERVER_ERROR);}
+
 }
