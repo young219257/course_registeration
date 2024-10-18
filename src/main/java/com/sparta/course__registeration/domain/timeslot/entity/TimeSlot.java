@@ -1,7 +1,6 @@
 package com.sparta.course__registeration.domain.timeslot.entity;
 
 import com.sparta.course__registeration.domain.lesson.entity.Lesson;
-import com.sparta.course__registeration.domain.timeslot.dto.TimeSlotRequestDto;
 import com.sparta.course__registeration.domain.tutor.entity.Tutor;
 import com.sparta.course__registeration.global.entity.TimeStamped;
 import jakarta.persistence.*;
