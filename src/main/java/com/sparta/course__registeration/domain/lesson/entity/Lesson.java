@@ -17,7 +17,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "lessons")
+@Table(name="lessons")
 public class Lesson extends TimeStamped {
 
     @Id
@@ -37,8 +37,8 @@ public class Lesson extends TimeStamped {
     private Student student;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "timeslot_id",nullable = false)
-    private TimeSlot timeSlot;
+    @JoinColumn(name = "timeslot_id", nullable = false)
+    private TimeSlot timeslot;
 
 
 
