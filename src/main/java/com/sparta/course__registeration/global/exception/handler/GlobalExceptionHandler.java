@@ -16,4 +16,10 @@ public class GlobalExceptionHandler {
         RestApiException restApiException=new RestApiException(HttpStatus.INTERNAL_SERVER_ERROR.value(), ex.getMessage());
         return new ResponseEntity<>(restApiException, HttpStatus.INTERNAL_SERVER_ERROR);}
 
+    @ExceptionHandler(NotFoundResourceException.class)
+    public ResponseEntity notFoundResourceException(NotFoundResourceException ex) {
+        RestApiException restApiException=new RestApiException(HttpStatus.NOT_FOUND.value(), ex.getMessage());
+        return new ResponseEntity<>(restApiException, HttpStatus.NOT_FOUND);
+    }
+
 }
