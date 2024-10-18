@@ -18,7 +18,7 @@ import java.util.List;
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
-@Table(name="students")
+@Table(name="Students")
 public class Student extends TimeStamped {
 
 
@@ -29,7 +29,7 @@ public class Student extends TimeStamped {
     @Column(nullable = false)
     private String name;
 
-    @OneToMany(mappedBy = "students",cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "student",cascade = CascadeType.ALL)
     private List<Lesson> lessons;
 
 

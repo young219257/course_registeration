@@ -16,7 +16,7 @@ import java.util.List;
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
-@Table(name="tutors")
+@Table(name = "tutors")
 public class Tutor extends TimeStamped {
 
     @Id
@@ -26,10 +26,12 @@ public class Tutor extends TimeStamped {
     @Column(nullable = false)
     private String name;
 
-    @OneToMany(mappedBy = "tutors",cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "tutor",cascade = CascadeType.ALL)
     private List<TimeSlot> timeSlots;
 
-    @OneToMany(mappedBy = "tutors",cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "tutor",cascade = CascadeType.ALL)
     private List<Lesson> lessons;
+
+
 
 }
