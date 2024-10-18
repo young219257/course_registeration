@@ -5,6 +5,9 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+
+import java.time.LocalDateTime;
+
 @Getter
 @Builder
 @NoArgsConstructor
@@ -12,7 +15,8 @@ import lombok.NoArgsConstructor;
 public class AddLessonRequestDto {
 
     private Long studentId;
-    private Long timeSlotId;
+    private LocalDateTime timeSlot;
+    private Long tutorId;
     private ClassPath classPath;
 
 }
