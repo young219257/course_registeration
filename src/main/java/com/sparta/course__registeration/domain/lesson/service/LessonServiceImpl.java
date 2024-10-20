@@ -65,11 +65,21 @@ public class LessonServiceImpl implements LessonService {
     @Transactional(readOnly = true)
     public List<LessonResponseDto> getAllLessons(GetLessonsRequestDto getLessonsRequestDto) {
 
-        List<Lesson> lessons=lessonRepository.findAllByStudentId(getLessonsRequestDto.getStudentId());
+        List<Lesson> lessons=findLessonByStudentId(getLessonsRequestDto.getStudentId());
+
+        //신청 수업이 없을 경우
+        if(lessons.isEmpty()){
+            throw new NotFoundResourceException(ErrorCode.NOTFOUND_LESSONS);
+        }
 
         return lessons.stream()
                 .map(LessonResponseDto::from)
                 .collect(Collectors.toList());
+    }
+
+    private List<Lesson> findLessonByStudentId(Long studentId) {
+
+        return lessonRepository.findAllByStudentId(studentId);
     }
 
     private Student findStudentById(Long studentId) {
@@ -77,6 +87,6 @@ public class LessonServiceImpl implements LessonService {
     }
 
     private TimeSlot findTimeSlotByStartTimeAndTutorId(LocalDateTime startTime, Long tutorId) {
-        return timeSlotRepository.findByTutorIdAndStartTimeBetween(tutorId,startTime,startTime.plusMinutes(30)).orElseThrow(()->new NotFoundResourceException(ErrorCode.NOTFOUND_TIMESLOT));
+        return timeSlotRepository.findByTutorIdAndStartTime(tutorId,startTime).orElseThrow(()->new NotFoundResourceException(ErrorCode.NOTFOUND_TIMESLOT));
     }
 }
