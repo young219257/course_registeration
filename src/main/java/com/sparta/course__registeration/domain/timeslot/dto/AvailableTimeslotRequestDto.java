@@ -1,5 +1,6 @@
 package com.sparta.course__registeration.domain.timeslot.dto;
 
+import com.sparta.course__registeration.domain.lesson.type.ClassPath;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -15,5 +16,5 @@ import java.time.LocalDateTime;
 public class AvailableTimeslotRequestDto {
     private LocalDate startDate;
     private LocalDate endDate;
-    private int classPath;
+    private ClassPath classPath;
 }
