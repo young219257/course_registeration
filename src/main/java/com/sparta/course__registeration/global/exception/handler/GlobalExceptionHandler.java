@@ -22,4 +22,22 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(restApiException, HttpStatus.NOT_FOUND);
     }
 
+    @ExceptionHandler(TimeSlotDeletionException.class)
+    public ResponseEntity timeSlotDeletionException(TimeSlotDeletionException ex) {
+        RestApiException restApiException=new RestApiException(HttpStatus.BAD_REQUEST.value(), ex.getMessage());
+        return new ResponseEntity<>(restApiException, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(TimeSlotAlreadyExistsException.class)
+    public ResponseEntity timeSlotAlreadyExistsException(TimeSlotAlreadyExistsException ex) {
+        RestApiException restApiException=new RestApiException(HttpStatus.BAD_REQUEST.value(), ex.getMessage());
+        return new ResponseEntity<>(restApiException, HttpStatus.CONFLICT);
+    }
+
+    @ExceptionHandler(TimeSlotNotAvailableException.class)
+    public ResponseEntity timeSlotNotAvailableException(TimeSlotNotAvailableException ex) {
+        RestApiException restApiException=new RestApiException(HttpStatus.BAD_REQUEST.value(), ex.getMessage());
+        return new ResponseEntity<>(restApiException, HttpStatus.BAD_REQUEST);
+    }
+
 }

@@ -41,6 +41,15 @@ public class Lesson extends TimeStamped {
     private TimeSlot timeslot;
 
 
+    public static Lesson of(ClassPath classPath, Tutor tutor, Student student, TimeSlot timeslot) {
+        return Lesson.builder().
+                classPath(classPath).
+                tutor(tutor).
+                student(student).
+                timeslot(timeslot).
+                build();
+    }
+
 
 
 }
