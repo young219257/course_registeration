@@ -11,9 +11,18 @@
    - `gradle -v` : `3.3.4`
    - 설치방법: [Gradle 다운로드](https://gradle.org/releases/) 참고
    
-3) 의존서(dependnecies) 설치
+3) 의존성(dependnecies) 설치
 
    - `./gradlew build`
+  
+4) 데이터베이스 설정
+<code>spring.datasource.url=jdbc:mysql://localhost:3306/course_registeration
+spring.datasource.username=root
+spring.datasource.password=young2192
+<code>
+# 데이터베이스 초기화 설정
+spring.sql.init.mode=always
+spring.sql.init.data-locations=classpath:init.sql
 
 ## 2. 프로젝트 설계 배경
 
