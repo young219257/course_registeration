@@ -49,6 +49,12 @@ public class TimeSlot extends TimeStamped {
                 tutor(tutor).
                 startTime(availableTimeSlot).
                 endTime(availableTimeSlot.plusMinutes(30)).
+                isAvailable(true).
                 build();
     }
+
+    public void updateIsAvailable() {
+        this.isAvailable = !this.isAvailable;
+    }
+
 }
