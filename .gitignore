@@ -35,5 +35,4 @@ out/
 git status
 ### VS Code ###
 .vscode/
-
 application.properties
