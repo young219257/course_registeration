@@ -38,7 +38,7 @@ public class TimeSlotServiceImpl implements TimeSlotService {
         Tutor tutor = findTutorByTutorId(tutorId);
         List<TimeSlot> timeSlots=new ArrayList<>();
 
-        for(LocalDateTime availableTimeSlot : timeSlotRequestDto.getAvailableTimeslots()){
+        for(LocalDateTime availableTimeSlot : timeSlotRequestDto.getAvailableTimeSlots()){
 
             // 중복된 시간대가 존재하는지 확인
             if (timeSlotRepository.existsByTutorAndStartTime(tutor, availableTimeSlot)) {
