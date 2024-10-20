@@ -17,7 +17,7 @@
   
 4) 데이터베이스 설정
 
-데이터베이스 연결 정보를 `application.properties` 파일에 다음과 같이 설정합니다:
+데이터베이스 연결 정보를 `application.properties` 파일에 다음과 같이 설정합니다.
 
 ```properties
 # 데이터베이스 연결 설정
@@ -29,6 +29,9 @@ spring.datasource.password=password
 spring.sql.init.mode=always
 spring.sql.init.data-locations=classpath:init.sql
 ```
+5) 애플리케이션 실행
+   - `./gradlew bootRun`
+   - 포트번호(8081) 확인하여, 브라우저 실행
 
 ## 2. 프로젝트 설계 배경
 
