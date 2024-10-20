@@ -3,7 +3,9 @@
 ## 1. 프로젝트 실행 방법
 
 ## 2. 프로젝트 설계 배경
-
+<br>
+### 📌 주요 기능
+<br>
 ### 📌 API
 
 #### ● Tutor API
@@ -22,6 +24,5 @@
 
 
 
-### 주요 기능
 ### 데이터베이스
 ● Erd : https://www.erdcloud.com/d/impWPBYKqvDYHnMJx
