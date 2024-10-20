@@ -1,40 +1,7 @@
 # 🛒수강신청 api
 
-## 1. 프로젝트 실행 방법
-1) Java 설치 확인
 
-   - `java -version` : `java version "21.0.4"`
-   - 설치 방법: [Java 다운로드](https://www.oracle.com/java/technologies/javase-jdk11-downloads.html) 참고
-
-2) Gradle 설치 확인
-
-   - `gradle -v` : `3.3.4`
-   - 설치방법: [Gradle 다운로드](https://gradle.org/releases/) 참고
-   
-3) 의존성(dependnecies) 설치
-
-   - `./gradlew build`
-  
-4) 데이터베이스 설정
-
-데이터베이스 연결 정보를 `application.properties` 파일에 다음과 같이 설정합니다.
-
-```properties
-# 데이터베이스 연결 설정
-spring.datasource.url=jdbc:mysql://localhost:3306/course_registration
-spring.datasource.username=username
-spring.datasource.password=password
-
-# 데이터베이스 초기화 설정
-spring.sql.init.mode=always
-spring.sql.init.data-locations=classpath:init.sql
-```
-5) 애플리케이션 실행
-   - `./gradlew bootRun`
-   - 포트번호(8081) 확인하여, 브라우저 실행
-<br>
-
-## 2. 프로젝트 설계 배경
+## 1. 프로젝트 설계 배경
 
 ### 📌 주요 기능
 
@@ -81,6 +48,10 @@ spring.sql.init.data-locations=classpath:init.sql
 
 <br>
 
+### 📌 데이터베이스
+● Erd : https://www.erdcloud.com/d/impWPBYKqvDYHnMJx
+<br>
+
 ### 📌 API
 
 #### ● Tutor API
@@ -101,5 +72,39 @@ spring.sql.init.data-locations=classpath:init.sql
 
 
 
-### 📌 데이터베이스
-● Erd : https://www.erdcloud.com/d/impWPBYKqvDYHnMJx
+
+
+
+## 2. 프로젝트 실행 방법
+1) Java 설치 확인
+
+   - `java -version` : `java version "21.0.4"`
+   - 설치 방법: [Java 다운로드](https://www.oracle.com/java/technologies/javase-jdk11-downloads.html) 참고
+
+2) Gradle 설치 확인
+
+   - `gradle -v` : `3.3.4`
+   - 설치방법: [Gradle 다운로드](https://gradle.org/releases/) 참고
+   
+3) 의존성(dependnecies) 설치
+
+   - `./gradlew build`
+  
+4) 데이터베이스 설정
+
+데이터베이스 연결 정보를 `application.properties` 파일에 다음과 같이 설정합니다.
+
+```properties
+# 데이터베이스 연결 설정
+spring.datasource.url=jdbc:mysql://localhost:3306/course_registration
+spring.datasource.username=username
+spring.datasource.password=password
+
+# 데이터베이스 초기화 설정
+spring.sql.init.mode=always
+spring.sql.init.data-locations=classpath:init.sql
+```
+5) 애플리케이션 실행
+   - `./gradlew bootRun`
+   - 포트번호(8081) 확인하여, 브라우저 실행
+<br>
