@@ -17,7 +17,7 @@ public interface TimeSlotRepository extends JpaRepository<TimeSlot, Long> {
 
     Optional<TimeSlot> findByStartTimeAndTutorId(LocalDateTime startTime, Long tutorId);
 
-    Optional<TimeSlot> findByTutorIdAndStartTimeBetween(Long tutorId,LocalDateTime startTime, LocalDateTime endTime);
+    Optional<TimeSlot> findByTutorIdAndStartTime(Long tutorId,LocalDateTime startTime);
 
     boolean existsByTutorAndStartTime(Tutor tutor, LocalDateTime availableTimeSlot);
 }
