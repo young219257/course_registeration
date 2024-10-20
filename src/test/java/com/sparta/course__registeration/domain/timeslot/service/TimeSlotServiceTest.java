@@ -61,7 +61,7 @@ class TimeSlotServiceTest {
         );
 
         TimeSlotRequestDto requestDto = TimeSlotRequestDto.builder()
-                .availableTimeslots(availableTimeslots)
+                .availableTimeSlots(availableTimeslots)
                 .build();
 
         //중복된 시간대가 없다고 가정

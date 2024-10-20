@@ -42,7 +42,7 @@ class TimeSlotControllerTest {
         // Given
         Long tutorId = 1L;
         TimeSlotRequestDto requestDto = TimeSlotRequestDto.builder()
-                .availableTimeslots(List.of(
+                .availableTimeSlots(List.of(
                         LocalDateTime.of(2024, 7, 12, 5, 0, 0),
                         LocalDateTime.of(2024, 7, 12, 5, 30, 0)
                 ))
