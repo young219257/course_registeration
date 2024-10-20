@@ -20,7 +20,6 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
-@Slf4j
 public class TutorServiceImpl implements TutorService {
 
     private final TimeSlotRepository timeSlotRepository;
@@ -79,8 +78,6 @@ public class TutorServiceImpl implements TutorService {
 
     private List<TimeSlot> findAllTimeSlot(LocalDateTime timeSlot) {
         List<TimeSlot> timeSlots = timeSlotRepository.findAllByStartTimeBetween(timeSlot, timeSlot.plusMinutes(30));
-        // 로그 출력
-        log.info("Found time slots: {}", timeSlots);
         return timeSlots;
     }
 }
