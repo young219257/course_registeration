@@ -8,6 +8,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 @Getter
 @NoArgsConstructor
@@ -17,14 +18,17 @@ public class LessonResponseDto {
 
     private Long lessonId;
     private String tutorName;
-    private LocalDateTime timeSlot;
+    private String timeSlot;
     private ClassPath classPath;
 
     public static LessonResponseDto from(Lesson lesson) {
+        // ISO 8601 형식으로 변환
+        String formattedTimeSlot = lesson.getTimeslot().getStartTime()
+                .format(DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss'Z'")); // 원하는 포맷 지정
         return LessonResponseDto.builder()
                 .lessonId(lesson.getId())
                 .tutorName(lesson.getTutor().getName())
-                .timeSlot(lesson.getTimeslot().getStartTime())
+                .timeSlot(formattedTimeSlot)
                 .classPath(lesson.getClassPath())
                 .build();
     }
