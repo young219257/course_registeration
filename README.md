@@ -13,11 +13,10 @@
 | DELETE | /api/tutors/{tutorId}/timeslots   | 수업 가능 시간대 삭제         | {<br>  "timeSlot": "2023-06-12T12:00:00Z"<br>}                          | {<br>  "statusCode": 200,<br>  "message": "시간대 삭제 성공"<br>} |
 
 #### ● Student API
-
 | Method | Endpoint                           | Description                     | Request                                                                     | Response Example                                      |
 |--------|------------------------------------|---------------------------------|-----------------------------------------------------------------------------|------------------------------------------------------|
 | GET    | /api/lessons/timeslots             | 수업 가능 시간대 조회         | {<br>  "startDate": "2023-06-12T00:00:00Z",<br>  "endDate": "2023-06-15T00:00:00Z",<br>  "classPath": "SIXTY"<br>} | {<br>  "statusCode": 200,<br>  "message": "수업 가능 시간대 조회 성공",<br>  "data": [<br>    {"availableTimeSlot": "2023-06-12T14:00:00Z"},<br>    {"availableTimeSlot": "2023-06-14T20:00:00Z"}<br>  ]<br>} |
-| DELETE | /api/tutors/{tutorId}/timeslots   | 수업 가능 시간대 삭제         | {<br>  "timeSlot": "2023-06-12T12:00:00Z"<br>}                          | {<br>  "statusCode": 200,<br>  "message": "시간대 삭제 성공"<br>} |
+| GET | /api/lessons/tutors  | 수업 가능 튜터 조회         | {<br>  "timeSlot": ""2023-06-14T14:00:00Z"<br>}                          | {<br>  "statusCode": 200,<br>  "message": "시간대 삭제 성공"<br>} |
 
 
 ### 주요 기능
