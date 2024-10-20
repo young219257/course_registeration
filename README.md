@@ -11,7 +11,9 @@
    - `gradle -v` : `3.3.4`
    - 설치방법: [Gradle 다운로드](https://gradle.org/releases/) 참고
    
+3) 의존서(dependnecies) 설치
 
+   -`./gradlew build`
 
 ## 2. 프로젝트 설계 배경
 
