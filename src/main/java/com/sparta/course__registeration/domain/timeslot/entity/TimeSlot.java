@@ -18,7 +18,6 @@ import java.util.List;
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
-@Table(name="timeslots")
 public class TimeSlot extends TimeStamped {
 
 

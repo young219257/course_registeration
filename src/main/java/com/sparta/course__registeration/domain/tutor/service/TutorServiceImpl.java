@@ -6,6 +6,7 @@ import com.sparta.course__registeration.domain.timeslot.repository.TimeSlotRepos
 import com.sparta.course__registeration.domain.tutor.dto.TutorRequestDto;
 import com.sparta.course__registeration.domain.tutor.dto.TutorResponseDto;
 import com.sparta.course__registeration.domain.tutor.entity.Tutor;
+import com.sparta.course__registeration.domain.tutor.repository.TutorRepository;
 import com.sparta.course__registeration.global.exception.handler.ErrorCode;
 import com.sparta.course__registeration.global.exception.handler.NotFoundResourceException;
 import lombok.RequiredArgsConstructor;
@@ -77,7 +78,6 @@ public class TutorServiceImpl implements TutorService {
     }
 
     private List<TimeSlot> findAllTimeSlot(LocalDateTime timeSlot) {
-        List<TimeSlot> timeSlots = timeSlotRepository.findAllByStartTimeBetween(timeSlot, timeSlot.plusMinutes(30));
-        return timeSlots;
+        return timeSlotRepository.findAllByStartTimeBetween(timeSlot, timeSlot.plusMinutes(30));
     }
 }

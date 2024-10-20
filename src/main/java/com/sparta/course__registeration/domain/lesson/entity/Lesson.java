@@ -17,7 +17,6 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name="lessons")
 public class Lesson extends TimeStamped {
 
     @Id
