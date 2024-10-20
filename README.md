@@ -6,6 +6,12 @@
 - `java -version` : `java version "21.0.4"`
 - 설치 방법: [Java 다운로드](https://www.oracle.com/java/technologies/javase-jdk11-downloads.html) 참고
 
+2) Gradle 설치 확인
+
+- Gradle 버전 확인:
+  ```bash
+  gradle -v
+
 
 ## 2. 프로젝트 설계 배경
 
