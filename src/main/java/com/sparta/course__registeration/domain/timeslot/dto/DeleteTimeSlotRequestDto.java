@@ -6,11 +6,13 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDateTime;
+
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
 public class DeleteTimeSlotRequestDto {
 
-    private Long timeSlotId;
+    private LocalDateTime timeSlot;
 }
