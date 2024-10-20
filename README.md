@@ -16,14 +16,19 @@
    - `./gradlew build`
   
 4) 데이터베이스 설정
+
+데이터베이스 연결 정보를 `application.properties` 파일에 다음과 같이 설정합니다:
+
 ```properties
+# 데이터베이스 연결 설정
 spring.datasource.url=jdbc:mysql://localhost:3306/course_registration
 spring.datasource.username=root
 spring.datasource.password=young2192
 
 # 데이터베이스 초기화 설정
 spring.sql.init.mode=always
-spring.sql.init.data-locations=classpath:init.sql```
+spring.sql.init.data-locations=classpath:init.sql
+
 
 ## 2. 프로젝트 설계 배경
 
