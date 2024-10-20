@@ -2,7 +2,7 @@
 
 ## 1. 프로젝트 실행 방법
 1) Java 설치 확인
-   <br>
+   <br><br>
    - java -version : java version "21.0.4"
    - 설치 방법: Java 다운로드 참고
 
