@@ -13,7 +13,7 @@
    
 3) 의존서(dependnecies) 설치
 
-   -`./gradlew build`
+   - `./gradlew build`
 
 ## 2. 프로젝트 설계 배경
 
