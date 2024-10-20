@@ -32,7 +32,7 @@ public class LessonServiceImpl implements LessonService {
 
     @Override
     @Transactional
-    public void signUpLesson(AddLessonRequestDto addLessonRequestDto) {
+    public Lesson signUpLesson(AddLessonRequestDto addLessonRequestDto) {
 
         Student student=findStudentById(addLessonRequestDto.getStudentId());
         TimeSlot timeSlot=findTimeSlotByStartTimeAndTutorId(addLessonRequestDto.getTimeSlot(), addLessonRequestDto.getTutorId());
@@ -43,22 +43,20 @@ public class LessonServiceImpl implements LessonService {
             throw new TimeSlotNotAvailableException(ErrorCode.ALREADY_BOOKING_TIMESLOT);
         }
 
-        Lesson lesson=Lesson.of(classPath, timeSlot.getTutor(), student,timeSlot);
+        Lesson lesson=Lesson.of(classPath,timeSlot.getTutor(), student,timeSlot);
         lessonRepository.save(lesson);
 
         //예약 완료 상태로 변경
         timeSlot.updateIsAvailable();
 
         if(classPath.equals(ClassPath.SIXTY)){
-            //timeSlot의 endTime이 startTime이며 tutor가 동일한 TimeSlot을 찾아 lesson에 추가
+            //다음 시간대의 수업 조회
             TimeSlot nextTimeSlot = findTimeSlotByStartTimeAndTutorId(timeSlot.getEndTime(),timeSlot.getTutor().getId());
-            Lesson nextLesson =Lesson.of(classPath, nextTimeSlot.getTutor(), student,nextTimeSlot);
-            lessonRepository.save(nextLesson);
 
             //예약 완료 상태로 변경
             nextTimeSlot.updateIsAvailable();
         }
-
+        return lesson;
     }
 
     @Override
@@ -87,6 +85,6 @@ public class LessonServiceImpl implements LessonService {
     }
 
     private TimeSlot findTimeSlotByStartTimeAndTutorId(LocalDateTime startTime, Long tutorId) {
-        return timeSlotRepository.findByTutorIdAndStartTime(tutorId,startTime).orElseThrow(()->new NotFoundResourceException(ErrorCode.NOTFOUND_TIMESLOT));
+        return timeSlotRepository.findByStartTimeAndTutorId(startTime,tutorId).orElseThrow(()->new NotFoundResourceException(ErrorCode.NOTFOUND_TIMESLOT));
     }
 }

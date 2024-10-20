@@ -17,9 +17,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.ZoneOffset;
+import java.time.*;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -35,12 +33,12 @@ public class TimeSlotServiceImpl implements TimeSlotService {
     //시간대 생성
     @Override
     @Transactional
-    public void addTimeSlot(Long tutorId, TimeSlotRequestDto timeSlotRequestDto) {
+    public List<TimeSlot> addTimeSlot(Long tutorId, TimeSlotRequestDto timeSlotRequestDto) {
 
         Tutor tutor = findTutorByTutorId(tutorId);
         List<TimeSlot> timeSlots=new ArrayList<>();
 
-        for(LocalDateTime availableTimeSlot : timeSlotRequestDto.getAvailableTimeslots()){
+        for(LocalDateTime availableTimeSlot : timeSlotRequestDto.getAvailableTimeSlots()){
 
             // 중복된 시간대가 존재하는지 확인
             if (timeSlotRepository.existsByTutorAndStartTime(tutor, availableTimeSlot)) {
@@ -51,14 +49,15 @@ public class TimeSlotServiceImpl implements TimeSlotService {
             timeSlots.add(timeSlot);
 
         }
-        timeSlotRepository.saveAll(timeSlots);
-
+        List<TimeSlot> savedTimeSlots = timeSlotRepository.saveAll(timeSlots);
+        System.out.println("Saved TimeSlots: " + savedTimeSlots); // 저장 후 확인
+        return savedTimeSlots;
     }
 
     //시간대 삭제
     @Override
     @Transactional
-    public void deleteTimeSlot(Long tutorId, DeleteTimeSlotRequestDto deleteTimeSlotRequestDto) {
+    public TimeSlot deleteTimeSlot(Long tutorId, DeleteTimeSlotRequestDto deleteTimeSlotRequestDto) {
         TimeSlot timeSlot = findTimeSlotByStartTimeAndTutorId(deleteTimeSlotRequestDto.getTimeSlot(),tutorId);
 
         // 시간대가 이미 예약되어 있을 경우 삭제 불가 예외 발생
@@ -66,6 +65,7 @@ public class TimeSlotServiceImpl implements TimeSlotService {
             throw new TimeSlotDeletionException(ErrorCode.CANNOT_DELETE_BOOKED_TIMESLOT);
         }
         timeSlotRepository.delete(timeSlot);
+        return timeSlot;
     }
 
     //기간, 수업 길이로 시간대 조회
@@ -103,8 +103,10 @@ public class TimeSlotServiceImpl implements TimeSlotService {
                 ? LocalDateTime.now()
                 : requestDto.getStartDate().atStartOfDay();
 
-        // 종료 시간 : 다음 날 00:00
-        LocalDateTime endDateTime = requestDto.getEndDate().plusDays(1).atStartOfDay();
+        // 종료 시간 : KST 기준으로 다음 날 00:00
+        ZonedDateTime endDateTimeUtc = requestDto.getEndDate().atStartOfDay(ZoneId.of("UTC"));
+        ZonedDateTime endDateTimeKst = endDateTimeUtc.withZoneSameInstant(ZoneId.of("Asia/Seoul")).plusDays(1);
+        LocalDateTime endDateTime = endDateTimeKst.toLocalDate().atStartOfDay(ZoneId.of("Asia/Seoul")).toLocalDateTime();
 
         return timeSlotRepository.findAllByStartTimeBetween(startDateTime, endDateTime);
     }

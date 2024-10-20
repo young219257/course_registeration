@@ -4,13 +4,15 @@ import com.sparta.course__registeration.domain.timeslot.dto.AvailableTimeslotReq
 import com.sparta.course__registeration.domain.timeslot.dto.AvailableTimeslotResponseDto;
 import com.sparta.course__registeration.domain.timeslot.dto.DeleteTimeSlotRequestDto;
 import com.sparta.course__registeration.domain.timeslot.dto.TimeSlotRequestDto;
+import com.sparta.course__registeration.domain.timeslot.entity.TimeSlot;
+import com.sparta.course__registeration.global.exception.handler.dto.ApiResponse;
 
 import java.util.List;
 
 public interface TimeSlotService {
-    void addTimeSlot(Long tutorId, TimeSlotRequestDto timeSlotRequestDto);
+    List<TimeSlot> addTimeSlot(Long tutorId, TimeSlotRequestDto timeSlotRequestDto);
 
-    void deleteTimeSlot(Long tutorId, DeleteTimeSlotRequestDto deleteTimeSlotRequestDto);
+    TimeSlot deleteTimeSlot(Long tutorId, DeleteTimeSlotRequestDto deleteTimeSlotRequestDto);
 
     List<AvailableTimeslotResponseDto> getAvailableTimeSlots(AvailableTimeslotRequestDto availableTimeslotRequestDto);
 }

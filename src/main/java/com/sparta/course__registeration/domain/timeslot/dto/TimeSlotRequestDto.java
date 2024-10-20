@@ -14,5 +14,5 @@ import java.util.List;
 @Builder
 public class TimeSlotRequestDto {
 
-    private List<LocalDateTime> availableTimeslots;
+    private List<LocalDateTime> availableTimeSlots;
 }
