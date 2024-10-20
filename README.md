@@ -23,7 +23,7 @@ spring.datasource.password=young2192
 
 # 데이터베이스 초기화 설정
 spring.sql.init.mode=always
-spring.sql.init.data-locations=classpath:init.sql
+spring.sql.init.data-locations=classpath:init.sql```
 
 ## 2. 프로젝트 설계 배경
 
