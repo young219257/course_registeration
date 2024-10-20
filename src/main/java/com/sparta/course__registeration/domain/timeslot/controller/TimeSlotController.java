@@ -28,12 +28,12 @@ public class TimeSlotController {
 
     @DeleteMapping("/tutors/{tutorId}/timeslots")
     public ApiResponse deleteTimeSlot(@PathVariable Long tutorId, @RequestBody DeleteTimeSlotRequestDto deleteTimeSlotRequestDto) {
-        timeSlotService.deleteTimeSlot(deleteTimeSlotRequestDto);
+        timeSlotService.deleteTimeSlot(tutorId,deleteTimeSlotRequestDto);
         return ApiResponse.ok(200,"시간대 삭제 성공");
     }
 
     //수업 가능 시간대 조회
-    @GetMapping("/api/lessons/timeslots")
+    @GetMapping("/lessons/timeslots")
     public ApiResponse<List<AvailableTimeslotResponseDto>> getAvailableTimeSlots(@RequestBody AvailableTimeslotRequestDto availableTimeslotRequestDto) {
         List<AvailableTimeslotResponseDto> availableTimeslotResponseDtoList=timeSlotService.getAvailableTimeSlots(availableTimeslotRequestDto);
         return ApiResponse.ok(200,"수업 가능 시간대 조회 성공",availableTimeslotResponseDtoList);
