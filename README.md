@@ -8,9 +8,7 @@
 
 2) Gradle 설치 확인
 
-- Gradle 버전 확인:
-  ```bash
-  gradle -v
+  - `gradle -v' : `3.3.4`
 
 
 ## 2. 프로젝트 설계 배경
