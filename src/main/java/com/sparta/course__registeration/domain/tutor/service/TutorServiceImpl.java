@@ -30,8 +30,11 @@ public class TutorServiceImpl implements TutorService {
     public List<TutorResponseDto> getAvailableTutors(TutorRequestDto tutorRequestDto) {
 
         List<TimeSlot> timeSlot=findAllTimeSlot(tutorRequestDto.getTimeSlot());
-
         List<Tutor> availableTutors=findAvailableTutors(timeSlot,tutorRequestDto.getClassPath());
+
+        if(availableTutors.isEmpty()){
+            throw new NotFoundResourceException(ErrorCode.NOT_AVAILABLE_TUTORS);
+        }
 
         return availableTutors.stream()
                 .map(TutorResponseDto::from)

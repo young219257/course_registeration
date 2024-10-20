@@ -76,6 +76,9 @@ public class TimeSlotServiceImpl implements TimeSlotService {
         List<TimeSlot> timeSlots = findTimeSlotByPeriod(availableTimeslotRequestDto); // 기간 내 시간대
         List<TimeSlot> availableTimeslots = filterAvailableTimeSlot(timeSlots, availableTimeslotRequestDto); // 이용 가능한 시간대
 
+        if(availableTimeslots.isEmpty()){
+            throw new NotFoundResourceException(ErrorCode.NOT_AVAILABLE_TIMESLOT);
+        }
         // 중복 제거 및 시간 순으로 정렬 후 DTO 생성
         return availableTimeslots.stream()
                 .distinct()
