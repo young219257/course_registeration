@@ -3,12 +3,12 @@
 ## 1. 프로젝트 실행 방법
 1) Java 설치 확인
 
-- `java -version` : `java version "21.0.4"`
-- 설치 방법: [Java 다운로드](https://www.oracle.com/java/technologies/javase-jdk11-downloads.html) 참고
+   - `java -version` : `java version "21.0.4"`
+   - 설치 방법: [Java 다운로드](https://www.oracle.com/java/technologies/javase-jdk11-downloads.html) 참고
 
 2) Gradle 설치 확인
 
-  - `gradle -v` : `3.3.4`
+   - `gradle -v` : `3.3.4`
 
 
 ## 2. 프로젝트 설계 배경
