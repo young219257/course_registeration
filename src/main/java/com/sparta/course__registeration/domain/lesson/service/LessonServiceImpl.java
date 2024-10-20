@@ -52,6 +52,9 @@ public class LessonServiceImpl implements LessonService {
         if(classPath.equals(ClassPath.SIXTY)){
             //다음 시간대의 수업 조회
             TimeSlot nextTimeSlot = findTimeSlotByStartTimeAndTutorId(timeSlot.getEndTime(),timeSlot.getTutor().getId());
+            if(nextTimeSlot==null){
+                throw new TimeSlotNotAvailableException(ErrorCode.NOTFOUND_TIMESLOT);
+            }
 
             //예약 완료 상태로 변경
             nextTimeSlot.updateIsAvailable();
@@ -85,6 +88,6 @@ public class LessonServiceImpl implements LessonService {
     }
 
     private TimeSlot findTimeSlotByStartTimeAndTutorId(LocalDateTime startTime, Long tutorId) {
-        return timeSlotRepository.findByStartTimeAndTutorId(startTime,tutorId).orElseThrow(()->new NotFoundResourceException(ErrorCode.NOTFOUND_TIMESLOT));
+        return timeSlotRepository.findByStartTimeAndTutorId(startTime, tutorId);
     }
 }

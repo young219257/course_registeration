@@ -59,6 +59,9 @@ public class TimeSlotServiceImpl implements TimeSlotService {
     @Transactional
     public TimeSlot deleteTimeSlot(Long tutorId, DeleteTimeSlotRequestDto deleteTimeSlotRequestDto) {
         TimeSlot timeSlot = findTimeSlotByStartTimeAndTutorId(deleteTimeSlotRequestDto.getTimeSlot(),tutorId);
+        if(timeSlot==null){
+            throw new NotFoundResourceException(ErrorCode.NOTFOUND_TIMESLOT);
+        }
 
         // 시간대가 이미 예약되어 있을 경우 삭제 불가 예외 발생
         if (!timeSlot.isAvailable()) {
@@ -83,7 +86,7 @@ public class TimeSlotServiceImpl implements TimeSlotService {
         return availableTimeslots.stream()
                 .distinct()
                 .sorted(Comparator.comparing(TimeSlot::getStartTime)) // 시작 시간을 기준으로 정렬
-                .map(AvailableTimeslotResponseDto::from) // from 메서드를 사용하여 DTO 생성
+                .map(AvailableTimeslotResponseDto::from)
                 .collect(Collectors.toList());
     }
 
@@ -92,7 +95,7 @@ public class TimeSlotServiceImpl implements TimeSlotService {
     }
 
     private TimeSlot findTimeSlotByStartTimeAndTutorId(LocalDateTime startTime, Long tutorId) {
-        return timeSlotRepository.findByStartTimeAndTutorId(startTime,tutorId).orElseThrow(()->new NotFoundResourceException(ErrorCode.NOTFOUND_TIMESLOT));
+        return timeSlotRepository.findByStartTimeAndTutorId(startTime, tutorId);
     }
 
 
@@ -123,32 +126,29 @@ public class TimeSlotServiceImpl implements TimeSlotService {
             if (alreadyExists) {
                 continue; // 다음 TimeSlot으로 넘어감
             }
+
             if (timeSlot.isAvailable()) { // 예약 가능한 시간대인지 확인
+
                 if (availableTimeslotRequestDto.getClassPath().equals(ClassPath.SIXTY)) { // 수업 길이가 60분인 경우
 
-                    boolean hasNextSlot = false;
+                    // 연속되는 TimeSlot 확인
+                    boolean hasNextSlot = timeSlots.stream()
+                            .anyMatch(nextSlot -> nextSlot.getTutor().equals(timeSlot.getTutor()) &&
+                                    nextSlot.getStartTime().isEqual(timeSlot.getEndTime()) &&
+                                    nextSlot.isAvailable());
 
-                    // 다음 30분 슬롯 확인
-                    for (TimeSlot nextSlot : timeSlots) {
-                        if (nextSlot.getTutor().equals(timeSlot.getTutor())
-                                && nextSlot.getStartTime().isEqual(timeSlot.getEndTime())) {
-                            hasNextSlot = true;
-                            break;
-                        }
-                    }
-
-                    // 다음 타임에 시간이 존재할 때
+                    // 두 슬롯이 연속되는 경우에만 추가
                     if (hasNextSlot) {
                         availableTimeslots.add(timeSlot);
                     }
+                } else if (availableTimeslotRequestDto.getClassPath().equals(ClassPath.THIRTY)) {
+                    // 30분 수업의 경우 바로 추가
+                    availableTimeslots.add(timeSlot);
                 }
-
-                //classPath 30분인 경우
-                availableTimeslots.add(timeSlot);
             }
         }
 
-        //중복된 시간대 제거하고 반환
+
         return availableTimeslots.stream().distinct().collect(Collectors.toList());
     }
 

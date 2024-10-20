@@ -105,7 +105,7 @@ class TutorServiceTest {
         List<TimeSlot> timeSlots = new ArrayList<>();
 
         TimeSlot timeSlot1 = createTimeSlot(1L, tutor1, LocalDateTime.of(2023, 6, 14, 6, 30), true);
-        TimeSlot timeSlot2 = createTimeSlot(1L, tutor1, LocalDateTime.of(2023, 6, 14, 7, 0), true);
+        TimeSlot timeSlot2 = createTimeSlot(2L, tutor1, LocalDateTime.of(2023, 6, 14, 7, 0), true);
         TimeSlot timeSlot3 = createTimeSlot(3L, tutor2, LocalDateTime.of(2023, 6, 14, 6, 30), true);
         TimeSlot timeSlot4 = createTimeSlot(4L, tutor2, LocalDateTime.of(2023, 6, 14, 8, 0), true);
         timeSlots.add(timeSlot1);
@@ -115,32 +115,31 @@ class TutorServiceTest {
 
 
         // 조회할 시간 범위 정의
-        LocalDateTime timeSlot = LocalDateTime.of(2023, 6, 14, 6, 30);
+        LocalDateTime startTime = LocalDateTime.of(2023, 6, 14, 6, 30);
+        LocalDateTime endTime = startTime.plusMinutes(30);
+
+        when(timeSlotRepository.findAllByStartTimeBetween(startTime,endTime)).thenReturn(timeSlots);
 
         // 조회할 시간 범위 정의
         when(timeSlotRepository.findByStartTimeAndTutorId(any(LocalDateTime.class), any(Long.class)))
                 .thenAnswer(invocation -> {
-                    LocalDateTime startTime = invocation.getArgument(0);
+                    LocalDateTime nextTime = invocation.getArgument(0);
                     Long tutorId = invocation.getArgument(1);
 
-                    // 조건에 맞는 TimeSlot 반환
-                    if (tutorId.equals(tutor1Id) && startTime.equals(LocalDateTime.of(2023, 6, 14, 6, 30))) {
-                        return Optional.of(timeSlot1);
-                    } else if (tutorId.equals(tutor1Id) && startTime.equals(LocalDateTime.of(2023, 6, 14, 7, 0))) {
-                        return Optional.of(timeSlot2);
-                    } else if (tutorId.equals(tutor2Id) && startTime.equals(LocalDateTime.of(2023, 6, 14, 6, 30))) {
-                        return Optional.of(timeSlot3);
-                    } else if (tutorId.equals(tutor2Id) && startTime.equals(LocalDateTime.of(2023, 6, 14, 7, 0))) {
-                        return Optional.of(timeSlot4);
+                    if (tutorId.equals(tutor1Id) && nextTime.equals(LocalDateTime.of(2023, 6, 14, 7, 0))) {
+                        return timeSlot2; // 연속된 두 번째 슬롯 반환
+                    } else if (tutorId.equals(tutor2Id) && nextTime.equals(LocalDateTime.of(2023, 6, 14, 8, 0))) {
+                        return timeSlot4; // 연속되지 않은 슬롯
                     } else {
-                        return Optional.empty();
+                        return null;
                     }
                 });
 
 
+
         // TutorRequestDto 생성
         TutorRequestDto requestDto = TutorRequestDto.builder()
-                .timeSlot(timeSlot ) // 요청된 시간
+                .timeSlot(startTime) // 요청된 시간
                 .classPath(ClassPath.SIXTY)
                 .build();
 

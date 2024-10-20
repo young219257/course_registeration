@@ -30,6 +30,9 @@ public class TutorServiceImpl implements TutorService {
     public List<TutorResponseDto> getAvailableTutors(TutorRequestDto tutorRequestDto) {
 
         List<TimeSlot> timeSlot=findAllTimeSlot(tutorRequestDto.getTimeSlot());
+        if(timeSlot.isEmpty()){
+            throw new NotFoundResourceException(ErrorCode.NOT_AVAILABLE_TIMESLOT);
+        }
         List<Tutor> availableTutors=findAvailableTutors(timeSlot,tutorRequestDto.getClassPath());
 
         if(availableTutors.isEmpty()){
@@ -54,7 +57,10 @@ public class TutorServiceImpl implements TutorService {
             // 1. classPath = 60인 경우: 다음 시간대도 확인
             if (classPath.equals(ClassPath.SIXTY)) {
 
-                TimeSlot nextSlot = findNextTimeSlotBystartTimeAndTutor(timeSlot.getEndTime(),tutor);
+                TimeSlot nextSlot = findNextTimeSlotBystartTimeAndTutor(timeSlot.getEndTime(),tutor.getId());
+                if(nextSlot==null){
+                    continue;
+                }
 
                 if (timeSlot.isAvailable() && nextSlot.isAvailable()) {
                     availableTutors.add(tutor);
@@ -67,14 +73,17 @@ public class TutorServiceImpl implements TutorService {
                 }
             }
         }
+        if (availableTutors.isEmpty()) {
+            throw new NotFoundResourceException(ErrorCode.NOT_AVAILABLE_TUTORS);
+        }
 
         // 중복된 튜터를 제거하고 반환
         return availableTutors.stream().distinct().collect(Collectors.toList());
     }
 
 
-    private TimeSlot findNextTimeSlotBystartTimeAndTutor(LocalDateTime startTime, Tutor tutor) {
-        return timeSlotRepository.findByStartTimeAndTutorId(startTime, tutor.getId()).orElseThrow(()-> new NotFoundResourceException(ErrorCode.NOTFOUND_TIMESLOT));
+    private TimeSlot findNextTimeSlotBystartTimeAndTutor(LocalDateTime startTime,Long tutorId) {
+        return timeSlotRepository.findByStartTimeAndTutorId(startTime, tutorId);
     }
 
     private List<TimeSlot> findAllTimeSlot(LocalDateTime timeSlot) {

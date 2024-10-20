@@ -69,7 +69,7 @@ class LessonServiceTest {
 
         // 모킹 설정
         when(timeSlotRepository.findByStartTimeAndTutorId(any(LocalDateTime.class), any(Long.class)))
-                .thenReturn(Optional.of(timeSlot1));
+                .thenReturn(timeSlot1);
 
         AddLessonRequestDto requestDto = AddLessonRequestDto.builder()
                 .studentId(studentId)
@@ -113,13 +113,13 @@ class LessonServiceTest {
 
                     // 첫 번째 호출에 대한 응답
                     if (startTime.equals(LocalDateTime.of(2024, 6, 14, 6, 30)) && tutorId.equals(2L)) {
-                        return Optional.of(timeSlot1);
+                        return timeSlot1;
                     }
                     // 두 번째 호출에 대한 응답
                     else if (startTime.equals(LocalDateTime.of(2024, 6, 14, 7, 0)) && tutorId.equals(2L)) {
-                        return Optional.of(timeSlot2);
+                        return timeSlot2;
                     } else {
-                        return Optional.empty();
+                        return null;
                     }
                 });
 
