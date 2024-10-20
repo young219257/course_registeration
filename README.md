@@ -69,5 +69,5 @@
 
 
 
-### 데이터베이스
+### 📌 데이터베이스
 ● Erd : https://www.erdcloud.com/d/impWPBYKqvDYHnMJx
