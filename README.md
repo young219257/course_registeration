@@ -16,10 +16,11 @@
    - `./gradlew build`
   
 4) 데이터베이스 설정
-<code>spring.datasource.url=jdbc:mysql://localhost:3306/course_registeration
+```properties
+spring.datasource.url=jdbc:mysql://localhost:3306/course_registration
 spring.datasource.username=root
 spring.datasource.password=young2192
-<code>
+
 # 데이터베이스 초기화 설정
 spring.sql.init.mode=always
 spring.sql.init.data-locations=classpath:init.sql
