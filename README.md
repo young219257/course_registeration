@@ -2,7 +2,11 @@
 
 
 ## 1. 프로젝트 설계
-
+### 📌 사용 기술
+- Java 21
+- Spring Boot
+- Spring Data JPA
+  
 ### 📌 주요 기능
 
 #### ● Tutor API
@@ -71,7 +75,7 @@
 | GET    | /api/lessons/my-lessons       | 신청한 수업 조회            | {<br>  "studentId": 2<br>}                                               | {<br>  "statusCode": 200,<br>  "message": "신청한 수업 조회 성공",<br>  "data": [<br>    {<br>      "lessonId": 1,<br>      "tutorName": "Jane Smith",<br>      "timeSlot": "2023-06-12T14:00:00Z",<br>      "classPath": "THIRTY"<br>    }<br>  ]<br>} |
 
 
-
+### 📌 데이터베이스
 
 
 
@@ -114,3 +118,5 @@ spring.jpa.properties.hibernate.jdbc.time_zone=Asia/Seoul
    - `./gradlew bootRun`
    - 포트번호(8081) 확인하여, 브라우저 실행
 <br>
+
+
