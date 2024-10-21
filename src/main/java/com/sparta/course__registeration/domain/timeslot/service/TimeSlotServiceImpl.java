@@ -121,7 +121,7 @@ public class TimeSlotServiceImpl implements TimeSlotService {
         return availableTimeslots.stream().distinct().collect(Collectors.toList());
     }
 
-    // availableTimeSlot 기준 중복된 시간대 확인
+    // availableTimeSlot 기준 중복된 시간대 확인 메서드
     private boolean isDuplicateSlot(TimeSlot timeSlot, List<TimeSlot> availableTimeslots) {
         for (TimeSlot existingSlot : availableTimeslots) {
             if (existingSlot.getStartTime().isEqual(timeSlot.getStartTime())) {
@@ -131,18 +131,19 @@ public class TimeSlotServiceImpl implements TimeSlotService {
         return false;
     }
 
-    // 종료 시간 계산: UTC에서 KST로 변환 후 다음 날 00:00
+    // 종료 시간 계산 메서드
     private LocalDateTime calculateEndDateTime(AvailableTimeslotRequestDto requestDto) {
         ZonedDateTime endDateUtc = requestDto.getEndDate().atStartOfDay(ZoneId.of("UTC"));
         ZonedDateTime endDateKst = endDateUtc.withZoneSameInstant(ZoneId.of("Asia/Seoul")).plusDays(1);
         return endDateKst.toLocalDate().atStartOfDay();
     }
 
+    //튜터 조회 메서드
     private Tutor findTutorByTutorId(Long tutorId){
         return tutorRepository.findById(tutorId).orElseThrow(()->new NotFoundResourceException(ErrorCode.NOTFOUND_TUTOR));
     }
 
-    //시작시간, 튜터Id로 timeSlot 반환
+    //시작시간, 튜터Id로 timeSlot 조회하는 메서드
     private TimeSlot findTimeSlotByStartTimeAndTutorId(LocalDateTime startTime, Long tutorId) {
         TimeSlot timeSlot= timeSlotRepository.findByStartTimeAndTutorId(startTime, tutorId);
         // 존재하는 시간대인지 확인

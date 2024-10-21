@@ -30,6 +30,7 @@ public class LessonServiceImpl implements LessonService {
     private final TimeSlotRepository timeSlotRepository;
 
 
+    //수강신청 메소드
     @Override
     @Transactional
     public Lesson signUpLesson(AddLessonRequestDto addLessonRequestDto) {
@@ -49,6 +50,7 @@ public class LessonServiceImpl implements LessonService {
         return lesson;
     }
 
+    //신청 수업 조회 메소드
     @Override
     @Transactional(readOnly = true)
     public List<LessonResponseDto> getAllLessons(GetLessonsRequestDto getLessonsRequestDto) {
@@ -74,6 +76,7 @@ public class LessonServiceImpl implements LessonService {
 
     }
 
+    //특정 학생 수업 목록 조회 메소드
     private List<Lesson> findLessonByStudentId(Long studentId) {
         List<Lesson> lessons = lessonRepository.findAllByStudentId(studentId);
         //신청 수업 유무 확인
@@ -87,6 +90,7 @@ public class LessonServiceImpl implements LessonService {
         return studentRepository.findById(studentId).orElseThrow(()->new NotFoundResourceException(ErrorCode.NOTFOUND_STUDENT));
     }
 
+    //예약 가능 timeSlot 조회 메서드
     private TimeSlot getAvailableTimeSlot(LocalDateTime startTime, Long tutorId) {
         TimeSlot timeSlot=timeSlotRepository.findByStartTimeAndTutorId(startTime, tutorId);
         //timeSlot의 예약 여부 확인

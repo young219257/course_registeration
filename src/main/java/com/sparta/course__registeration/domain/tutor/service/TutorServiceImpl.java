@@ -13,7 +13,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.sql.Time;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -30,7 +29,7 @@ public class TutorServiceImpl implements TutorService {
     public List<TutorResponseDto> getAvailableTutors(TutorRequestDto tutorRequestDto) {
 
         List<TimeSlot> timeSlots=findAllTimeSlot(tutorRequestDto.getTimeSlot()); //해당 시간대 목록 반환
-        List<Tutor> availableTutors=findAvailableTutors(timeSlots,tutorRequestDto.getClassPath()); //수업 가능 튜터 반환
+        List<Tutor> availableTutors= filterAvailableTutors(timeSlots,tutorRequestDto.getClassPath()); //수업 가능 튜터 반환
 
         return availableTutors.stream()
                 .map(TutorResponseDto::from)
@@ -38,8 +37,8 @@ public class TutorServiceImpl implements TutorService {
 
     }
 
-    // 주어진 TimeSlot 리스트에서 가능한 튜터를 찾음
-    private List<Tutor> findAvailableTutors(List<TimeSlot> timeSlots, ClassPath classPath) {
+    // 특정 시간대의 timeSlot 리스트 중 수업 가능 Tutor 조회 메서드
+    private List<Tutor> filterAvailableTutors(List<TimeSlot> timeSlots, ClassPath classPath) {
 
         List<Tutor> availableTutors = new ArrayList<>();
 
