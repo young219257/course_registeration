@@ -15,6 +15,7 @@ import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabas
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -35,7 +36,7 @@ class LessonRepositoryTest {
     private TimeSlotRepository timeSlotRepository;
 
     @Test
-    @DisplayName("강의 만들기")
+    @DisplayName("강의 생성")
     void createLesson() {
         // Given
         Student student = studentRepository.save(createStudent());
@@ -62,6 +63,23 @@ class LessonRepositoryTest {
     @DisplayName("학생이 신청한 강의 조회 : studentId를 통한 조회")
     @Test
     void findAllByStudentId() {
+        //Given
+        Student student = studentRepository.save(createStudent());
+        Tutor tutor1 = tutorRepository.save(createTutor(1L));
+        Tutor tutor2 = tutorRepository.save(createTutor(2L));
+        TimeSlot timeSlot1 = timeSlotRepository.save(createTimeSlot(1L, tutor1, LocalDateTime.of(2024, 6, 14, 6, 30), true));
+        TimeSlot timeSlot2 = timeSlotRepository.save(createTimeSlot(2L, tutor2, LocalDateTime.of(2024, 6, 14, 10, 30), true));
+
+        Lesson lesson1 = lessonRepository.save(createLesson(1L,student,tutor1,timeSlot1, ClassPath.valueOf("THIRTY")));
+        Lesson lesson2 = lessonRepository.save(createLesson(2L,student,tutor2,timeSlot2, ClassPath.valueOf("SIXTY")));
+
+        //When
+        List<Lesson> response = lessonRepository.findAllByStudentId(student.getId());
+        //Then
+        assertNotNull(response);
+        assertEquals(2, response.size());
+        assertEquals(lesson1.getStudent().getId(), student.getId());
+        assertEquals(lesson2.getStudent().getId(), student.getId());
 
     }
 
@@ -89,6 +107,17 @@ class LessonRepositoryTest {
                 .endTime(startTime.plusMinutes(30))
                 .tutor(tutor)
                 .isAvailable(isAvailable)
+                .build();
+    }
+
+    // 헬퍼 메서드 : Lesson 생성
+    private Lesson createLesson(Long lessonId, Student student, Tutor tutor, TimeSlot timeSlot, ClassPath classPath) {
+        return Lesson.builder()
+                .id(lessonId)
+                .student(student)
+                .tutor(tutor)
+                .timeslot(timeSlot)
+                .classPath(classPath)
                 .build();
     }
 }
