@@ -78,6 +78,9 @@
 | POST   | /api/lessons/apply            | 수강 신청                   | {<br>  "studentId": 2,<br>  "timeSlot": "2023-06-12T14:00:00Z",<br>  "tutorId": 2,<br>  "classPath": "THIRTY"<br>} | {<br>  "statusCode": 200,<br>  "message": "수강 신청 성공"<br>} |
 | GET    | /api/lessons/my-lessons       | 신청한 수업 조회            | {<br>  "studentId": 2<br>}                                               | {<br>  "statusCode": 200,<br>  "message": "신청한 수업 조회 성공",<br>  "data": [<br>    {<br>      "lessonId": 1,<br>      "tutorName": "Jane Smith",<br>      "timeSlot": "2023-06-12T14:00:00Z",<br>      "classPath": "THIRTY"<br>    }<br>  ]<br>} |
 
+### 📌 단위 테스트
+** 본 프로젝트는 자동화된 테스트를 사용하여 안전성을 보장합니다. **
+   - 각 domain의 계층별 단위 테스트를 제공합니다.
 
 
 ## 2. 프로젝트 실행 방법
