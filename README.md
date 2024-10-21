@@ -92,9 +92,9 @@
   
 4) 데이터베이스 설정
 
-데이터베이스 연결 정보를 `application.properties` 파일에 다음과 같이 설정합니다.
+   - 데이터베이스 연결 정보를 `application.properties` 파일에 다음과 같이 설정합니다.
 
-- ```properties
+ ```properties
 # 데이터베이스 연결 설정
 spring.datasource.url=jdbc:mysql://localhost:3306/course_registration
 spring.datasource.username=username
