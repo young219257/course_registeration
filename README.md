@@ -57,6 +57,7 @@
 
 ### 📌 데이터베이스
 ● Erd 주소 : https://www.erdcloud.com/d/impWPBYKqvDYHnMJx
+(링크 오류 시 첨부된 erd 사진 파일 참조)
 <br>
 
 ### 📌 API
