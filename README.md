@@ -6,6 +6,7 @@
 - Java 21
 - Spring Boot
 - Spring Data JPA
+
   
 ### 📌 주요 기능
 
