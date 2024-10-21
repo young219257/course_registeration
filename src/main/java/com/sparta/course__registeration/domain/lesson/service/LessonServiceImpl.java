@@ -38,25 +38,13 @@ public class LessonServiceImpl implements LessonService {
         ClassPath classPath=addLessonRequestDto.getClassPath();
 
         //시간대, 튜터에 해당하는 timeSlot 반환
-        TimeSlot timeSlot=findTimeSlotByStartTimeAndTutorId(addLessonRequestDto.getTimeSlot(), addLessonRequestDto.getTutorId());
-
-        //timeSlot의 예약 여부 확인
-        if(!timeSlot.isAvailable()){
-            throw new TimeSlotNotAvailableException(ErrorCode.ALREADY_BOOKING_TIMESLOT);
-        }
+        TimeSlot timeSlot= getAvailableTimeSlot(addLessonRequestDto.getTimeSlot(), addLessonRequestDto.getTutorId());
 
         Lesson lesson=Lesson.of(classPath,timeSlot.getTutor(), student,timeSlot);
         lessonRepository.save(lesson);
 
         //예약 상태 변경
-        timeSlot.updateIsAvailable();
-
-        //수업 길이 : 60분의 경우
-        if(classPath.equals(ClassPath.SIXTY)){
-            //다음 TimeSlot의 예약 상태 변경
-            TimeSlot nextTimeSlot = findNextTimeSlot(timeSlot);
-            nextTimeSlot.updateIsAvailable();
-        }
+        updateTimeSlotNotAvailable(timeSlot,classPath);
 
         return lesson;
     }
@@ -67,35 +55,44 @@ public class LessonServiceImpl implements LessonService {
 
         List<Lesson> lessons=findLessonByStudentId(getLessonsRequestDto.getStudentId());
 
-        //신청 수업 유무 확인
-        if(lessons.isEmpty()){
-            throw new NotFoundResourceException(ErrorCode.NOTFOUND_LESSONS);
-        }
-
         return lessons.stream()
                 .map(LessonResponseDto::from)
                 .collect(Collectors.toList());
     }
 
-    private TimeSlot findNextTimeSlot(TimeSlot timeSlot){
-        TimeSlot nextTimeSlot = findTimeSlotByStartTimeAndTutorId(timeSlot.getEndTime(),timeSlot.getTutor().getId());
+    //예약 상태 변경 메소드
+    private void updateTimeSlotNotAvailable(TimeSlot timeSlot,ClassPath classPath){
 
-        if(nextTimeSlot==null){
-                throw new TimeSlotNotAvailableException(ErrorCode.NOTFOUND_TIMESLOT);
+        timeSlot.updateIsAvailable();
+
+        //수업 길이 : 60분의 경우
+        if(classPath.equals(ClassPath.SIXTY)){
+            //다음 TimeSlot의 예약 상태 변경
+            TimeSlot nextTimeSlot = getAvailableTimeSlot(timeSlot.getEndTime(),timeSlot.getTutor().getId());
+            nextTimeSlot.updateIsAvailable();
         }
 
-        return timeSlot;
     }
 
     private List<Lesson> findLessonByStudentId(Long studentId) {
-        return lessonRepository.findAllByStudentId(studentId);
+        List<Lesson> lessons = lessonRepository.findAllByStudentId(studentId);
+        //신청 수업 유무 확인
+        if(lessons.isEmpty()){
+            throw new NotFoundResourceException(ErrorCode.NOTFOUND_LESSONS);
+        }
+        return lessons;
     }
 
     private Student findStudentById(Long studentId) {
         return studentRepository.findById(studentId).orElseThrow(()->new NotFoundResourceException(ErrorCode.NOTFOUND_STUDENT));
     }
 
-    private TimeSlot findTimeSlotByStartTimeAndTutorId(LocalDateTime startTime, Long tutorId) {
-        return timeSlotRepository.findByStartTimeAndTutorId(startTime, tutorId);
+    private TimeSlot getAvailableTimeSlot(LocalDateTime startTime, Long tutorId) {
+        TimeSlot timeSlot=timeSlotRepository.findByStartTimeAndTutorId(startTime, tutorId);
+        //timeSlot의 예약 여부 확인
+        if(!timeSlot.isAvailable()){
+            throw new TimeSlotNotAvailableException(ErrorCode.ALREADY_BOOKING_TIMESLOT);
+        }
+        return timeSlot;
     }
 }

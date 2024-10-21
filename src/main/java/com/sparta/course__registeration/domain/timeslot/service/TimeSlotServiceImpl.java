@@ -58,11 +58,6 @@ public class TimeSlotServiceImpl implements TimeSlotService {
     public TimeSlot deleteTimeSlot(Long tutorId, DeleteTimeSlotRequestDto deleteTimeSlotRequestDto) {
         TimeSlot timeSlot = findTimeSlotByStartTimeAndTutorId(deleteTimeSlotRequestDto.getTimeSlot(),tutorId);
 
-        // 존재하는 시간대인지 확인
-        if(timeSlot==null){
-            throw new NotFoundResourceException(ErrorCode.NOTFOUND_TIMESLOT);
-        }
-
         // 이미 예약된 시간대인지 확인
         if (!timeSlot.isAvailable()) {
             throw new TimeSlotDeletionException(ErrorCode.CANNOT_DELETE_BOOKED_TIMESLOT);
@@ -149,7 +144,12 @@ public class TimeSlotServiceImpl implements TimeSlotService {
 
     //시작시간, 튜터Id로 timeSlot 반환
     private TimeSlot findTimeSlotByStartTimeAndTutorId(LocalDateTime startTime, Long tutorId) {
-        return timeSlotRepository.findByStartTimeAndTutorId(startTime, tutorId);
+        TimeSlot timeSlot= timeSlotRepository.findByStartTimeAndTutorId(startTime, tutorId);
+        // 존재하는 시간대인지 확인
+        if(timeSlot==null){
+            throw new NotFoundResourceException(ErrorCode.NOTFOUND_TIMESLOT);
+        }
+        return timeSlot;
     }
 
 
