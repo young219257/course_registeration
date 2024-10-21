@@ -14,7 +14,7 @@ public class Utils {
         }
 
         if (classPath.equals(ClassPath.SIXTY)) {
-            // 연속된 시간대가 있는지 확인 (for-loop 사용)
+            // 연속된 시간대가 있는지 확인
             return hasNextAvailableSlot(timeSlot, allSlots);
         }
 
