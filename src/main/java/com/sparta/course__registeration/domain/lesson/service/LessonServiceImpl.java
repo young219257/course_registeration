@@ -35,10 +35,11 @@ public class LessonServiceImpl implements LessonService {
     public Lesson signUpLesson(AddLessonRequestDto addLessonRequestDto) {
 
         Student student=findStudentById(addLessonRequestDto.getStudentId());
+        //시간대, 튜터에 해당하는 timeSlot 반환
         TimeSlot timeSlot=findTimeSlotByStartTimeAndTutorId(addLessonRequestDto.getTimeSlot(), addLessonRequestDto.getTutorId());
         ClassPath classPath=addLessonRequestDto.getClassPath();
 
-        //이미 예약이 되어있는 시간대의 경우
+        //timeSlot의 예약 여부 확인
         if(!timeSlot.isAvailable()){
             throw new TimeSlotNotAvailableException(ErrorCode.ALREADY_BOOKING_TIMESLOT);
         }
@@ -52,6 +53,7 @@ public class LessonServiceImpl implements LessonService {
         if(classPath.equals(ClassPath.SIXTY)){
             //다음 시간대의 수업 조회
             TimeSlot nextTimeSlot = findTimeSlotByStartTimeAndTutorId(timeSlot.getEndTime(),timeSlot.getTutor().getId());
+
             if(nextTimeSlot==null){
                 throw new TimeSlotNotAvailableException(ErrorCode.NOTFOUND_TIMESLOT);
             }
@@ -68,7 +70,7 @@ public class LessonServiceImpl implements LessonService {
 
         List<Lesson> lessons=findLessonByStudentId(getLessonsRequestDto.getStudentId());
 
-        //신청 수업이 없을 경우
+        //신청 수업 유무 확인
         if(lessons.isEmpty()){
             throw new NotFoundResourceException(ErrorCode.NOTFOUND_LESSONS);
         }

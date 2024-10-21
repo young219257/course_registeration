@@ -18,7 +18,7 @@ public class TimeSlotController {
 
     private final TimeSlotService timeSlotService;
 
-
+    //시간대 생성 api
     @PostMapping("/tutors/{tutorId}/timeslots")
     public ApiResponse addTimeSlot(@PathVariable Long tutorId, @RequestBody TimeSlotRequestDto timeSlotRequestDto) {
 
@@ -26,13 +26,14 @@ public class TimeSlotController {
         return ApiResponse.ok(200,"시간대 생성 성공");
     }
 
+    //시간대 삭제 api
     @DeleteMapping("/tutors/{tutorId}/timeslots")
     public ApiResponse deleteTimeSlot(@PathVariable Long tutorId, @RequestBody DeleteTimeSlotRequestDto deleteTimeSlotRequestDto) {
         timeSlotService.deleteTimeSlot(tutorId,deleteTimeSlotRequestDto);
         return ApiResponse.ok(200,"시간대 삭제 성공");
     }
 
-    //수업 가능 시간대 조회
+    //수업 가능 시간대 조회 api
     @GetMapping("/lessons/timeslots")
     public ApiResponse<List<AvailableTimeslotResponseDto>> getAvailableTimeSlots(@RequestBody AvailableTimeslotRequestDto availableTimeslotRequestDto) {
         List<AvailableTimeslotResponseDto> availableTimeslotResponseDtoList=timeSlotService.getAvailableTimeSlots(availableTimeslotRequestDto);

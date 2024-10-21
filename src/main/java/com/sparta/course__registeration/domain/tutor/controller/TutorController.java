@@ -19,6 +19,7 @@ public class TutorController {
 
     private final TutorService tutorService;
 
+    //수업 가능 튜터 조회 api
     @GetMapping("/lessons/tutors")
     public ApiResponse<List<TutorResponseDto>> getAvailableTutors(@RequestBody TutorRequestDto tutorRequestDto) {
         List<TutorResponseDto> tutorResponseDtos=tutorService.getAvailableTutors(tutorRequestDto);

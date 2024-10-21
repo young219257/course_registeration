@@ -22,9 +22,9 @@ public class LessonResponseDto {
     private ClassPath classPath;
 
     public static LessonResponseDto from(Lesson lesson) {
-        // ISO 8601 형식으로 변환
+        // ISO 8601 형식으로 출력
         String formattedTimeSlot = lesson.getTimeslot().getStartTime()
-                .format(DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss'Z'")); // 원하는 포맷 지정
+                .format(DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss'Z'"));
         return LessonResponseDto.builder()
                 .lessonId(lesson.getId())
                 .tutorName(lesson.getTutor().getName())

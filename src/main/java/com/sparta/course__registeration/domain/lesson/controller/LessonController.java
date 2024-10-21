@@ -17,6 +17,7 @@ public class LessonController {
 
     private final LessonService lessonService;
 
+    //수강 신청 api
     @PostMapping("/apply")
     public ApiResponse signUpLesson(@RequestBody AddLessonRequestDto addLessonRequestDto) {
 
@@ -25,6 +26,7 @@ public class LessonController {
 
     }
 
+    //신청한 수업 조회 api
     @GetMapping("/my-lessons")
     public ApiResponse<List<LessonResponseDto>> getAllLessons(@RequestBody GetLessonsRequestDto getLessonsRequestDto) {
 

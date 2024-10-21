@@ -26,18 +26,16 @@ public class TutorServiceImpl implements TutorService {
     private final TimeSlotRepository timeSlotRepository;
 
     @Override
-    @Transactional
+    @Transactional(readOnly = true)
     public List<TutorResponseDto> getAvailableTutors(TutorRequestDto tutorRequestDto) {
 
-        List<TimeSlot> timeSlot=findAllTimeSlot(tutorRequestDto.getTimeSlot());
+        List<TimeSlot> timeSlot=findAllTimeSlot(tutorRequestDto.getTimeSlot()); //해당 시간대 목록 반환
+        //해당하는 시간대 유무 확인
         if(timeSlot.isEmpty()){
             throw new NotFoundResourceException(ErrorCode.NOT_AVAILABLE_TIMESLOT);
         }
-        List<Tutor> availableTutors=findAvailableTutors(timeSlot,tutorRequestDto.getClassPath());
 
-        if(availableTutors.isEmpty()){
-            throw new NotFoundResourceException(ErrorCode.NOT_AVAILABLE_TUTORS);
-        }
+        List<Tutor> availableTutors=findAvailableTutors(timeSlot,tutorRequestDto.getClassPath()); //수업 가능 튜터 반환
 
         return availableTutors.stream()
                 .map(TutorResponseDto::from)
@@ -54,14 +52,15 @@ public class TutorServiceImpl implements TutorService {
         for (TimeSlot timeSlot : timeSlots) {
             Tutor tutor = timeSlot.getTutor();
 
-            // 1. classPath = 60인 경우: 다음 시간대도 확인
+            // 1. classPath = 60인 경우: 연속한 다음 시간대 유무 확인
             if (classPath.equals(ClassPath.SIXTY)) {
 
                 TimeSlot nextSlot = findNextTimeSlotBystartTimeAndTutor(timeSlot.getEndTime(),tutor.getId());
+                // 1) 연속한 시간대 없는 경우
                 if(nextSlot==null){
-                    continue;
+                    continue; //다음 timeSlot으로 넘김
                 }
-
+                // 2) 해당 시간대, 다음 시간대의 예약 여부 확인
                 if (timeSlot.isAvailable() && nextSlot.isAvailable()) {
                     availableTutors.add(tutor);
                 }
@@ -73,6 +72,7 @@ public class TutorServiceImpl implements TutorService {
                 }
             }
         }
+        //수업 가능한 튜터 유무 확인
         if (availableTutors.isEmpty()) {
             throw new NotFoundResourceException(ErrorCode.NOT_AVAILABLE_TUTORS);
         }
@@ -81,12 +81,12 @@ public class TutorServiceImpl implements TutorService {
         return availableTutors.stream().distinct().collect(Collectors.toList());
     }
 
-
+    //연속한 다음 timeSlot을 조회하는 메서드
     private TimeSlot findNextTimeSlotBystartTimeAndTutor(LocalDateTime startTime,Long tutorId) {
         return timeSlotRepository.findByStartTimeAndTutorId(startTime, tutorId);
     }
-
-    private List<TimeSlot> findAllTimeSlot(LocalDateTime timeSlot) {
-        return timeSlotRepository.findAllByStartTimeBetween(timeSlot, timeSlot.plusMinutes(30));
+    //시간대에 해당하는 timeSlot 목록을 조회하는 메서드
+    private List<TimeSlot> findAllTimeSlot(LocalDateTime startTime) {
+        return timeSlotRepository.findAllByStartTimeBetween(startTime, startTime.plusMinutes(30));
     }
 }

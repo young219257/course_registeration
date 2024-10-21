@@ -40,7 +40,7 @@ public class TimeSlotServiceImpl implements TimeSlotService {
 
         for(LocalDateTime availableTimeSlot : timeSlotRequestDto.getAvailableTimeSlots()){
 
-            // 중복된 시간대가 존재하는지 확인
+            // 중복된 시간대가 존재 여부 확인
             if (timeSlotRepository.existsByTutorAndStartTime(tutor, availableTimeSlot)) {
                 throw new TimeSlotAlreadyExistsException(ErrorCode.DUPLICATE_TIMESLOT);
             }
@@ -49,9 +49,7 @@ public class TimeSlotServiceImpl implements TimeSlotService {
             timeSlots.add(timeSlot);
 
         }
-        List<TimeSlot> savedTimeSlots = timeSlotRepository.saveAll(timeSlots);
-        System.out.println("Saved TimeSlots: " + savedTimeSlots); // 저장 후 확인
-        return savedTimeSlots;
+        return timeSlotRepository.saveAll(timeSlots);
     }
 
     //시간대 삭제
@@ -59,11 +57,13 @@ public class TimeSlotServiceImpl implements TimeSlotService {
     @Transactional
     public TimeSlot deleteTimeSlot(Long tutorId, DeleteTimeSlotRequestDto deleteTimeSlotRequestDto) {
         TimeSlot timeSlot = findTimeSlotByStartTimeAndTutorId(deleteTimeSlotRequestDto.getTimeSlot(),tutorId);
+
+        // 존재하는 시간대인지 확인
         if(timeSlot==null){
             throw new NotFoundResourceException(ErrorCode.NOTFOUND_TIMESLOT);
         }
 
-        // 시간대가 이미 예약되어 있을 경우 삭제 불가 예외 발생
+        // 이미 예약된 시간대인지 확인
         if (!timeSlot.isAvailable()) {
             throw new TimeSlotDeletionException(ErrorCode.CANNOT_DELETE_BOOKED_TIMESLOT);
         }
@@ -76,13 +76,15 @@ public class TimeSlotServiceImpl implements TimeSlotService {
     @Transactional(readOnly = true)
     public List<AvailableTimeslotResponseDto> getAvailableTimeSlots(AvailableTimeslotRequestDto availableTimeslotRequestDto) {
 
-        List<TimeSlot> timeSlots = findTimeSlotByPeriod(availableTimeslotRequestDto); // 기간 내 시간대
-        List<TimeSlot> availableTimeslots = filterAvailableTimeSlot(timeSlots, availableTimeslotRequestDto); // 이용 가능한 시간대
+        List<TimeSlot> timeSlots = findTimeSlotByPeriod(availableTimeslotRequestDto); // 기간 내 시간대 반환
+        List<TimeSlot> availableTimeslots = filterAvailableTimeSlot(timeSlots, availableTimeslotRequestDto); // 이용 가능한 시간대 반환
 
+        //이용가능한 시간대의 유무 확인
         if(availableTimeslots.isEmpty()){
             throw new NotFoundResourceException(ErrorCode.NOT_AVAILABLE_TIMESLOT);
         }
-        // 중복 제거 및 시간 순으로 정렬 후 DTO 생성
+
+        // 중복 제거 및 시간 순으로 정렬
         return availableTimeslots.stream()
                 .distinct()
                 .sorted(Comparator.comparing(TimeSlot::getStartTime)) // 시작 시간을 기준으로 정렬
@@ -94,14 +96,15 @@ public class TimeSlotServiceImpl implements TimeSlotService {
         return tutorRepository.findById(tutorId).orElseThrow(()->new NotFoundResourceException(ErrorCode.NOTFOUND_TUTOR));
     }
 
+    //시작시간, 튜터Id로 timeSlot 반환
     private TimeSlot findTimeSlotByStartTimeAndTutorId(LocalDateTime startTime, Long tutorId) {
         return timeSlotRepository.findByStartTimeAndTutorId(startTime, tutorId);
     }
 
-
+    //기간 내 timeSlot을 조회하는 메서드
     private List<TimeSlot> findTimeSlotByPeriod(AvailableTimeslotRequestDto requestDto) {
 
-        // 시작 시간 : 당일이면 현재 시간, 아니면 시작일의 00:00
+        // 시작 시간 : 당일이면 현재 시간 기준, 아니면 시작일의 00:00 기준
         LocalDateTime startDateTime = requestDto.getStartDate().isEqual(LocalDate.now())
                 ? LocalDateTime.now()
                 : requestDto.getStartDate().atStartOfDay();
@@ -114,12 +117,13 @@ public class TimeSlotServiceImpl implements TimeSlotService {
         return timeSlotRepository.findAllByStartTimeBetween(startDateTime, endDateTime);
     }
 
+    //기간 내 timeSlot 중 이용 가능한 시간대를 필터링하는 메서드
     private List<TimeSlot> filterAvailableTimeSlot(List<TimeSlot> timeSlots, AvailableTimeslotRequestDto availableTimeslotRequestDto) {
         List<TimeSlot> availableTimeslots = new ArrayList<>();
 
         for (TimeSlot timeSlot : timeSlots) {
 
-            // 만약 동일한 startTime의 TimeSlot이 이미 존재하면 다음으로 넘김
+            // availableTimeSlots에 동일한 시간대 존재 여부 확인
             boolean alreadyExists = availableTimeslots.stream()
                     .anyMatch(existingSlot -> existingSlot.getStartTime().isEqual(timeSlot.getStartTime()));
 
@@ -131,7 +135,7 @@ public class TimeSlotServiceImpl implements TimeSlotService {
 
                 if (availableTimeslotRequestDto.getClassPath().equals(ClassPath.SIXTY)) { // 수업 길이가 60분인 경우
 
-                    // 연속되는 TimeSlot 확인
+                    // 연속되는 TimeSlot의 유무 확인
                     boolean hasNextSlot = timeSlots.stream()
                             .anyMatch(nextSlot -> nextSlot.getTutor().equals(timeSlot.getTutor()) &&
                                     nextSlot.getStartTime().isEqual(timeSlot.getEndTime()) &&

@@ -103,6 +103,12 @@ spring.datasource.password=password
 # 데이터베이스 초기화 설정
 spring.sql.init.mode=always
 spring.sql.init.data-locations=classpath:init.sql
+# JPA ??
+spring.jpa.hibernate.ddl-auto=update
+spring.jpa.show-sql=true
+spring.jpa.properties.hibernate.dialect=org.hibernate.dialect.MySQLDialect
+
+spring.jpa.properties.hibernate.jdbc.time_zone=Asia/Seoul
 ```
 5) 애플리케이션 실행
    - `./gradlew bootRun`
