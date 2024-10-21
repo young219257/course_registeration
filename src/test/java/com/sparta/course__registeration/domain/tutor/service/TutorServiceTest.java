@@ -120,23 +120,6 @@ class TutorServiceTest {
 
         when(timeSlotRepository.findAllByStartTimeBetween(startTime,endTime)).thenReturn(timeSlots);
 
-        // 조회할 시간 범위 정의
-        when(timeSlotRepository.findByStartTimeAndTutorId(any(LocalDateTime.class), any(Long.class)))
-                .thenAnswer(invocation -> {
-                    LocalDateTime nextTime = invocation.getArgument(0);
-                    Long tutorId = invocation.getArgument(1);
-
-                    if (tutorId.equals(tutor1Id) && nextTime.equals(LocalDateTime.of(2023, 6, 14, 7, 0))) {
-                        return timeSlot2; // 연속된 두 번째 슬롯 반환
-                    } else if (tutorId.equals(tutor2Id) && nextTime.equals(LocalDateTime.of(2023, 6, 14, 8, 0))) {
-                        return timeSlot4; // 연속되지 않은 슬롯
-                    } else {
-                        return null;
-                    }
-                });
-
-
-
         // TutorRequestDto 생성
         TutorRequestDto requestDto = TutorRequestDto.builder()
                 .timeSlot(startTime) // 요청된 시간

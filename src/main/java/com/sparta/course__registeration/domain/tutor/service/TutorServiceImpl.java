@@ -6,14 +6,14 @@ import com.sparta.course__registeration.domain.timeslot.repository.TimeSlotRepos
 import com.sparta.course__registeration.domain.tutor.dto.TutorRequestDto;
 import com.sparta.course__registeration.domain.tutor.dto.TutorResponseDto;
 import com.sparta.course__registeration.domain.tutor.entity.Tutor;
-import com.sparta.course__registeration.domain.tutor.repository.TutorRepository;
+import com.sparta.course__registeration.global.common.Utils;
 import com.sparta.course__registeration.global.exception.handler.ErrorCode;
 import com.sparta.course__registeration.global.exception.handler.NotFoundResourceException;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.sql.Time;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -29,13 +29,8 @@ public class TutorServiceImpl implements TutorService {
     @Transactional(readOnly = true)
     public List<TutorResponseDto> getAvailableTutors(TutorRequestDto tutorRequestDto) {
 
-        List<TimeSlot> timeSlot=findAllTimeSlot(tutorRequestDto.getTimeSlot()); //해당 시간대 목록 반환
-        //해당하는 시간대 유무 확인
-        if(timeSlot.isEmpty()){
-            throw new NotFoundResourceException(ErrorCode.NOT_AVAILABLE_TIMESLOT);
-        }
-
-        List<Tutor> availableTutors=findAvailableTutors(timeSlot,tutorRequestDto.getClassPath()); //수업 가능 튜터 반환
+        List<TimeSlot> timeSlots=findAllTimeSlot(tutorRequestDto.getTimeSlot()); //해당 시간대 목록 반환
+        List<Tutor> availableTutors=findAvailableTutors(timeSlots,tutorRequestDto.getClassPath()); //수업 가능 튜터 반환
 
         return availableTutors.stream()
                 .map(TutorResponseDto::from)
@@ -52,24 +47,9 @@ public class TutorServiceImpl implements TutorService {
         for (TimeSlot timeSlot : timeSlots) {
             Tutor tutor = timeSlot.getTutor();
 
-            // 1. classPath = 60인 경우: 연속한 다음 시간대 유무 확인
-            if (classPath.equals(ClassPath.SIXTY)) {
-
-                TimeSlot nextSlot = findNextTimeSlotBystartTimeAndTutor(timeSlot.getEndTime(),tutor.getId());
-                // 1) 연속한 시간대 없는 경우
-                if(nextSlot==null){
-                    continue; //다음 timeSlot으로 넘김
-                }
-                // 2) 해당 시간대, 다음 시간대의 예약 여부 확인
-                if (timeSlot.isAvailable() && nextSlot.isAvailable()) {
-                    availableTutors.add(tutor);
-                }
-            }
-            // 2. classPath = 30인 경우: 현재 시간대만 확인
-            else if (classPath.equals(ClassPath.THIRTY)) {
-                if (timeSlot.isAvailable()) {
-                    availableTutors.add(tutor);
-                }
+            // 현재 슬롯이 사용 가능한지 확인
+            if (Utils.isAvailableForClass(timeSlot, timeSlots, classPath)) {
+                availableTutors.add(tutor);
             }
         }
         //수업 가능한 튜터 유무 확인
@@ -81,12 +61,14 @@ public class TutorServiceImpl implements TutorService {
         return availableTutors.stream().distinct().collect(Collectors.toList());
     }
 
-    //연속한 다음 timeSlot을 조회하는 메서드
-    private TimeSlot findNextTimeSlotBystartTimeAndTutor(LocalDateTime startTime,Long tutorId) {
-        return timeSlotRepository.findByStartTimeAndTutorId(startTime, tutorId);
-    }
     //시간대에 해당하는 timeSlot 목록을 조회하는 메서드
     private List<TimeSlot> findAllTimeSlot(LocalDateTime startTime) {
-        return timeSlotRepository.findAllByStartTimeBetween(startTime, startTime.plusMinutes(30));
+
+        List<TimeSlot> timeSlots = timeSlotRepository.findAllByStartTimeBetween(startTime, startTime.plusMinutes(30));
+        //해당하는 시간대 유무 확인
+        if(timeSlots.isEmpty()){
+            throw new NotFoundResourceException(ErrorCode.NOT_AVAILABLE_TIMESLOT);
+        }
+        return timeSlots;
     }
 }

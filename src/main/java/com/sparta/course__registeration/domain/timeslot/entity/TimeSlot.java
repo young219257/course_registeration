@@ -32,6 +32,7 @@ public class TimeSlot extends TimeStamped {
     @Column(nullable = false)
     private LocalDateTime endTime;
 
+    //예약 여부
     @Column(nullable = false)
     private boolean isAvailable = true;
 

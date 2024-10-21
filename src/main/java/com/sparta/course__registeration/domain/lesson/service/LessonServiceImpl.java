@@ -35,9 +35,10 @@ public class LessonServiceImpl implements LessonService {
     public Lesson signUpLesson(AddLessonRequestDto addLessonRequestDto) {
 
         Student student=findStudentById(addLessonRequestDto.getStudentId());
+        ClassPath classPath=addLessonRequestDto.getClassPath();
+
         //시간대, 튜터에 해당하는 timeSlot 반환
         TimeSlot timeSlot=findTimeSlotByStartTimeAndTutorId(addLessonRequestDto.getTimeSlot(), addLessonRequestDto.getTutorId());
-        ClassPath classPath=addLessonRequestDto.getClassPath();
 
         //timeSlot의 예약 여부 확인
         if(!timeSlot.isAvailable()){
@@ -47,20 +48,16 @@ public class LessonServiceImpl implements LessonService {
         Lesson lesson=Lesson.of(classPath,timeSlot.getTutor(), student,timeSlot);
         lessonRepository.save(lesson);
 
-        //예약 완료 상태로 변경
+        //예약 상태 변경
         timeSlot.updateIsAvailable();
 
+        //수업 길이 : 60분의 경우
         if(classPath.equals(ClassPath.SIXTY)){
-            //다음 시간대의 수업 조회
-            TimeSlot nextTimeSlot = findTimeSlotByStartTimeAndTutorId(timeSlot.getEndTime(),timeSlot.getTutor().getId());
-
-            if(nextTimeSlot==null){
-                throw new TimeSlotNotAvailableException(ErrorCode.NOTFOUND_TIMESLOT);
-            }
-
-            //예약 완료 상태로 변경
+            //다음 TimeSlot의 예약 상태 변경
+            TimeSlot nextTimeSlot = findNextTimeSlot(timeSlot);
             nextTimeSlot.updateIsAvailable();
         }
+
         return lesson;
     }
 
@@ -80,8 +77,17 @@ public class LessonServiceImpl implements LessonService {
                 .collect(Collectors.toList());
     }
 
-    private List<Lesson> findLessonByStudentId(Long studentId) {
+    private TimeSlot findNextTimeSlot(TimeSlot timeSlot){
+        TimeSlot nextTimeSlot = findTimeSlotByStartTimeAndTutorId(timeSlot.getEndTime(),timeSlot.getTutor().getId());
 
+        if(nextTimeSlot==null){
+                throw new TimeSlotNotAvailableException(ErrorCode.NOTFOUND_TIMESLOT);
+        }
+
+        return timeSlot;
+    }
+
+    private List<Lesson> findLessonByStudentId(Long studentId) {
         return lessonRepository.findAllByStudentId(studentId);
     }
 

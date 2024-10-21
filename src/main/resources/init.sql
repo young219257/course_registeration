@@ -14,8 +14,20 @@ CREATE TABLE IF NOT EXISTS student (
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
     );
 
+-- time_slot 테이블 생성
+CREATE TABLE IF NOT EXISTS time_slot (
+                                         id BIGINT AUTO_INCREMENT PRIMARY KEY,
+                                         start_time TIMESTAMP(6) NOT NULL,
+    end_time TIMESTAMP(6) NOT NULL,
+    is_available BOOLEAN DEFAULT TRUE,
+    tutor_id BIGINT,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    CONSTRAINT fk_tutor FOREIGN KEY (tutor_id) REFERENCES tutor(id) ON DELETE CASCADE
+    );
 
 -- 초기화 데이터 삽입
+
 -- tutor 데이터 삽입 (테이블에 데이터가 없을 경우에만)
 INSERT INTO tutor (name)
 SELECT 'John Doe' FROM DUAL
@@ -33,18 +45,6 @@ WHERE NOT EXISTS (SELECT 1 FROM student WHERE name = '김영아');
 INSERT INTO student (name)
 SELECT '박서영' FROM DUAL
 WHERE NOT EXISTS (SELECT 1 FROM student WHERE name = '박서영');
-
--- time_slot 테이블 생성
-CREATE TABLE IF NOT EXISTS time_slot (
-                                         id BIGINT AUTO_INCREMENT PRIMARY KEY,
-                                         start_time TIMESTAMP(6) NOT NULL,
-    end_time TIMESTAMP(6) NOT NULL,
-    is_available BOOLEAN DEFAULT TRUE,
-    tutor_id BIGINT,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-    CONSTRAINT fk_tutor FOREIGN KEY (tutor_id) REFERENCES tutor(id) ON DELETE CASCADE
-    );
 
 
 -- time_slot 데이터 삽입 (중복 방지)
